@@ -3,35 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Live Streaming Page</title>
+  <title>Live Stream</title>
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    h1 {
-      text-align: center;
-      padding: 1rem 0;
-      font-size: 1.8rem;
-    }
-
-    .video-section {
-      margin: 20px auto;
-      max-width: 960px;
-      width: 95%;
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      font-family: sans-serif;
+      overflow-x: hidden;
     }
 
     .video-container {
       position: relative;
-      padding-bottom: 56.25%; /* 16:9 */
-      height: 0;
-      overflow: hidden;
-      border-radius: 12px;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
       background: #000;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
 
     .video-container iframe {
@@ -40,32 +32,69 @@
       left: 0;
       width: 100%;
       height: 100%;
-      border: 0;
+      border: none;
+    }
+
+    .jiotv-container {
+      width: 100%;
+      height: 90vh;
+    }
+
+    .jiotv-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Landscape Mode Styling on Mobile */
+    .landscape-mode {
+      transform: rotate(90deg);
+      transform-origin: center center;
+      position: fixed;
+      width: 100vh;
+      height: 100vw;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .landscape-mode .video-container {
+      padding-top: 100%; /* Landscape full height */
+    }
+
+    .landscape-mode .jiotv-container {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      /* Disable rotation effect on desktop */
+      .landscape-mode {
+        transform: none !important;
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>🎥 Live Event Streaming</h1>
-
-  <!-- Vimeo Video -->
-  <div class="video-section">
+  <div id="main-wrapper">
+    <!-- Vimeo Live Video -->
     <div class="video-container">
       <iframe 
         src="https://vimeo.com/event/5176018/embed" 
-        allow="autoplay; fullscreen; picture-in-picture" 
+        allow="autoplay; fullscreen; picture-in-picture"
         allowfullscreen 
         webkitallowfullscreen 
         mozallowfullscreen>
       </iframe>
     </div>
-  </div>
 
-  <h1>🏏 Live JioTV Cricket</h1>
-
-  <!-- JioTV Widget -->
-  <div class="video-section">
-    <div class="video-container">
+    <!-- JioTV Widget -->
+    <div class="jiotv-container">
       <iframe 
         src="https://widget.jionews.com/jiotv-cricket/prod/v1/index.html?theme=dark&ismobile=true" 
         allowfullscreen 
@@ -75,6 +104,25 @@
       </iframe>
     </div>
   </div>
+
+  <script>
+    function handleOrientationChange() {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const isLandscape = window.innerWidth > window.innerHeight;
+
+      const wrapper = document.getElementById('main-wrapper');
+
+      if (isMobile && isLandscape) {
+        wrapper.classList.add('landscape-mode');
+      } else {
+        wrapper.classList.remove('landscape-mode');
+      }
+    }
+
+    window.addEventListener('resize', handleOrientationChange);
+    window.addEventListener('orientationchange', handleOrientationChange);
+    document.addEventListener('DOMContentLoaded', handleOrientationChange);
+  </script>
 
 </body>
 </html>
